@@ -1,0 +1,150 @@
+---
+title: "3 Hands On: Data Exploration"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+## 1 Summarization
+Cargue el conjunto de datos carIns final. Ya tiene la imputación de valores faltantes.
+1. Usando el paquete dplyr, responda las siguientes preguntas:
+
+# (a) Obtenga el número de automóviles por estilo de carrocería.
+```{r}
+library('dplyr')
+
+# Carga el archivo .Rdata
+df <- load("C:\\Users\\Dany\\Documents\\R\\Hand 03\\carIns_final.Rdata")
+
+#carIns_final$bodyStyle
+
+#unique(carIns_final$bodyStyle)
+
+carIns_final %>% group_by(bodyStyle) %>% count()
+```
+# (b) Obtenga el número de automóviles por bodyStyle y fuelType.
+```{r}
+carIns_final%>% group_by(bodyStyle, fuelType) %>% count()
+```
+# (c) Obtenga la media y la desviación estándar del atributo cityMpg por bodyStyle en orden ascendente.
+```{r}
+carIns_final %>% group_by(bodyStyle) %>% summarise(MediaCityMpg = mean(cityMpg), DesviacionCityMpg = sd(cityMpg))
+```
+# (d) También por body Style, y para los atributos city Mpg and highway Mpg, obtenga la media, la desviación estándar, la mediana y el rango intercuartil
+```{r}
+carIns_final %>% group_by(bodyStyle) %>% summarise(Media_CityMpg = mean(cityMpg), Desviacion_CityMpg = sd(cityMpg), Mediana_CityMpg = median(cityMpg), Rango_CityMpg = IQR(cityMpg), Media_highwayMpg = mean(highwayMpg), Desviacion_highwayMpg = sd(highwayMpg), Mediana_highwayMpg = median(highwayMpg), Rango_highwayMpg = IQR(highwayMpg))
+```
+# 2 Visualization
+## 2. Con el paquete ggplot2, cree gráficos que le parezcan adecuados para responder a las siguientes preguntas.
+
+## (e) Muestre la relación entre los atributos cityMpg y highwayMpg
+```{r}
+library("ggplot2")
+
+# ggplot crea graficos para presentar los resultados
+ggplot(carIns_final, aes(x = cityMpg, y = highwayMpg)) + 
+  geom_point() +
+  ggtitle("Relacion entre City y Highway")  # Agrega un titulo
+
+```
+## (f) Mostrar la distribución de automóviles por bodyStyle.
+```{r}
+ggplot(carIns_final, aes(x = bodyStyle, fill = bodyStyle)) +
+  geom_bar() +
+  scale_fill_manual(values = c('red', 'blue', 'green', 'yellow', 'purple')) +
+  ggtitle("Distribucion de automoviles")
+```
+## (g) Mostrar la distribución de automóviles por precio. Sugerencia: cree contenedores de ancho igual a 5000.
+```{r}
+ggplot(carIns_final, aes(x = price)) +
+  #geom_density(adjust = 1) +   # Crea grafico de densidad
+  geom_histogram(binwidth = 5000) +
+  # Ajusta los contenedores de ancho igual a 5000
+  scale_x_continuous(breaks = seq(0, max(carIns_final$price), 5000)) +     
+  labs(x = 'Precio', y = 'Densidad', title = 'Distribucion de automoviles por precio') +
+  theme_minimal()
+
+```
+## (h) Agregue la información de la estimación de densidad al gráfico anterior.
+```{r}
+ggplot(carIns_final, aes(x = price)) +
+  geom_density() +   # Crea grafico de densidad
+  # Ajusta los contenedores de ancho igual a 5000
+  scale_x_continuous(breaks = seq(0, max(carIns_final$price), 5000)) +     
+  labs(x = 'Precio', y = 'Densidad', title = 'Distribucion de automoviles por precio') +
+  theme_minimal()
+```
+## (i) Compruebe (visualmente) si es plausible considerar que el precio sigue una distribución normal.
+```{r}
+library(ggplot2)
+
+# Histograma de precios
+ggplot(carIns_final, aes(x = price)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "lightgray", color = "black") +
+  labs(x = "Precio", y = "Densidad", title = "Distribución de precios") +
+  theme_minimal() +
+  
+  # Curva de densidad teórica
+  geom_line(data = data.frame(x = x, y = y), aes(x = x, y = y), color = "blue", size = 1) +
+  
+  # Anotación al final del gráfico
+  annotate("text", x = Inf, y = Inf, label = "Se puede apreciar que no existe distribución normal",
+           hjust = 1, vjust = 1, size = 4, color = "red")
+
+```
+## (j) Mostrar la distribución del price por atributo make. Sugerencia: use diagramas de caja y la función coord_flip().
+```{r}
+library(ggplot2)
+
+# Diagrama de caja de distribucion de precio por make
+ggplot(carIns_final, aes(x = make, y= price)) +
+  # Traza los diagramas de caja
+  geom_boxplot(fill = "lightgray", color = "black") +  # fill = color de relleno, color = indica el color del contorno
+  coord_flip() +    # El grafico se muestra horizontalmente
+  labs(x = "Make", y = "Price", title = "Distribucion de Price por Make") +
+  theme_minimal()
+```
+## (k) Muestre la distribución del price por atributo en nDoors. Sugerencia: utilice histogramas.
+```{r}
+library(ggplot2)
+
+# Histograma de la distribución del precio por indoors
+ggplot(carIns_final, aes(x = price, fill = nDoors)) +
+  geom_histogram(bins = 30, color = "black", alpha = 0.7) +
+  # bins indica el numero de intervalos del histograma
+  # alpha defina la transparencia de las barras
+  labs(x = "Precio", y = "Frecuencia", title = "Distribución del precio por nDoors") +
+  theme_minimal()
+
+```
+# (l) Muestre la distribución del price por bodyStyle y el atributos nDoors. Sugerencia: utilice histogramas.
+```{r}
+library(ggplot2)
+
+# Histograma de la distribucion del precio por bodyStyle y nDoors
+ggplot(carIns_final, aes(x = price, fill = bodyStyle)) +
+  geom_histogram(position = "fill", bins = 30, color = "black", alpha = 0.7) +
+  # position = "fill" muestra las barras proporcionales al total de cada grupo
+  # bins = 30 establece el numero de intervales del histograma
+  facet_wrap(~nDoors) +     # Agrega paneles separados por los valores unicos del atributo "nDoors"
+  labs(x = "Precio", y = "Frecuencia", title = "Distribucion del precio por bodyStyle y nDoors") +
+  theme_grey()
+```
+# (m) Agregue el parámetro scales="free_y" a la función de faceta en el gráfico anterior.
+```{r}
+library(ggplot2)
+
+ggplot(carIns_final, aes(x = price, fill = bodyStyle)) +
+  geom_histogram(binwidth = 5000, color = "black", aes(y = after_stat(count))) +
+  # aes(y = ..count..) muestra el conteo de observaciones en el eje y del grafico de histograma
+  facet_wrap(~nDoors, scales = "free_y") +
+  # Al agregar scales = "free_y" a facet_wrap, cada panel del grafico tiene su propia escala en el eje Y
+  labs(x = "Precio", y = "Frecuencia", title = "Distribucion del precio por bodyStyle y nDoors") +
+  theme_minimal()
+# two y four son las categorias de la columna nDoors
+```
+
+
+
