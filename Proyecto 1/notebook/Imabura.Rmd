@@ -1,0 +1,316 @@
+---
+title: 'Proyecto 1: IMBABURA'
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+# Parroquias Rurales con mayor cantidad de Propietarios y Arrendatarios
+#### Daniel Samaniego Zapata
+#### GR2CC_2023-1
+
+## Buscamos y cargamos el archivo .CSV del censo del 2010 de la Provincia de Imbabura
+```{r}
+# Especifica la ruta y el nombre del archivo
+rutaImb <- "R:\\Politecnica.Nacional\\2023-A\\Data Mining\\Imbabura\\Imbabura_CSV_Hogar.csv"
+
+# Descomentar y ejecutar el siguiente codigo si se lo realiza desde el GitHub
+#rutaImb <- "..Proyecto 1\\data\\Imbabura_CSV_Hogar.csv"
+
+# Carga el archivo .csv
+datos <- read.csv(rutaImb)
+
+# Imprime contenido del archivo
+print(datos)
+
+```
+
+## Eliminamos las columnas que no se utilizarán verificando en la pagina: 
+### http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
+
+```{r}
+library(dplyr)
+
+# Borrar columnas
+columnasBorrar <- c("I04", "I05", "I09", "I10", "URH", "H00", "H01", "H01N", "H02", "H03", "H04", "H05", "H06", "H07", "H08", "H09", "H10", "H11", "H12", "H12NP", "H13A", "H13B", "H14A", "H14B", "M1", "M2A", "M2B", "TH1", "TM1")
+
+dfImb <- datos %>% select(-one_of(columnasBorrar))
+
+print(dfImb)
+```
+
+## Una vez eliminadas las columnas que no necesitaremos, procedemos a colocar los Nombres a las columnas que vamos a utilizar, verificando en la pag:
+### http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
+```{r}
+# Obtener nombres de las columnas actuales
+columnasActuales <- colnames(dfImb)
+
+# Definir nuevos nombres de las columnas
+nombresCOlumnas <- c("Provincia", "Canton", "Parroquia", "PropiedadVivienda", "TotalPersonasHogar")
+
+# Asignar los nuevos nombres de las columnas al dataframe
+colnames(dfImb) <- nombresCOlumnas
+
+print(dfImb)
+
+```
+
+## Procedemos a cambiar el número de la Parroquia por el nombre al que corresponde, para saber a que Provincia, Cantón y Parroquia corresponde se puede ver en el archivo DIVISION POLITICO ADMINISTRATIVA 2010.pdf que esta en la siguiente ruta "..Proyecto 1\\data\\DIVISION POLITICO ADMINISTRATIVA 2010.pdf"
+
+### Para esto se define una secuencia, luego se procede a comparar si el numero de la Columna Provincia corresponde con el primer valor de la secuencia, posteriormente se compara si el numero de la Columna Canton es igual al segundo valor de la secuencia y por el último se compara si el numero de la Columna Parroquia es igual al tercer numero de la secuencia, si la condición se cumple, se asgina el valor "Nombre_de_la_Parroquia" a la columna Parroquia.
+
+#### Esto se lo realiza con todas las parroquias, una a una ingresando la secuencia y el Nombre de la parroquia. 
+
+### Empezamos con las Parroquias del Cantón Ibarra.
+```{r}
+# Cambiar los valores por nombres en parroquia
+
+# Define la secuencia deseada
+secuencia <- c(10, 1, 50)
+
+# Realiza el cambio en la columna "Parroquia" basado en la secuencia
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Miguel de Ibarra", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Ambuqui", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Angochagua", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Carolina", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 54)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "La Esperanza", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 55)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Lita", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 56)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Salinas", dfImb$Parroquia)
+
+secuencia <- c(10, 1, 57)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Antonio", dfImb$Parroquia)
+
+print(dfImb)
+```
+
+## Realizamos el mismo procedimiento con las Parroquias del Cantón Antonio Ante
+```{r}
+secuencia <- c(10, 2, 50)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Atuntaqui", dfImb$Parroquia)
+
+secuencia <- c(10, 2, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Imbaya", dfImb$Parroquia)
+
+secuencia <- c(10, 2, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Francisco de Natabuela", dfImb$Parroquia)
+
+secuencia <- c(10, 2, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Jose de Chaltura", dfImb$Parroquia)
+
+secuencia <- c(10, 2, 54)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Roque", dfImb$Parroquia)
+```
+
+
+## Continuamos con las Parroquias del Cantón Cotacachi
+```{r}
+secuencia <- c(10, 3, 50)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Cotacachi", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Apuela", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Garcia Moreno", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Imantag", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 54)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Peñaherrera", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 55)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Plaza Gutierrez(Calvario)", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 56)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Quiroga", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 57)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "6 de Julio de Cuellaje", dfImb$Parroquia)
+
+secuencia <- c(10, 3, 58)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Vacas Galindo", dfImb$Parroquia)
+```
+
+## Luego con las Parroquias del cantón Otavalo
+```{r}
+secuencia <- c(10, 4, 50)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Otavalo", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Peguche", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Eugenio Espejo", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Gonzales SUarez", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 54)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Pataqui", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 55)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Jose de Quichinche", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 56)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Juan de Iluman", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 57)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Pablo", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 58)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Rafael", dfImb$Parroquia)
+
+secuencia <- c(10, 4, 59)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Selva Alegre", dfImb$Parroquia)
+```
+
+
+## Seguimos con las Parroquias del Cantón Pimampiro
+```{r}
+secuencia <- c(10, 5, 50)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Pimampiro", dfImb$Parroquia)
+
+secuencia <- c(10, 5, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Chuga", dfImb$Parroquia)
+
+secuencia <- c(10, 5, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Mariano Acosta", dfImb$Parroquia)
+
+secuencia <- c(10, 5, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Francisco de Sigsipamba", dfImb$Parroquia)
+```
+
+## Y finalizamos con las Parroquias de San Miguel de Urcuquí
+```{r}
+secuencia <- c(10, 6, 50)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Urcuqui", dfImb$Parroquia)
+
+secuencia <- c(10, 6, 51)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Cahuasqui", dfImb$Parroquia)
+
+secuencia <- c(10, 6, 52)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "La Merced de Buenos Aires", dfImb$Parroquia)
+
+secuencia <- c(10, 6, 53)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Pablo Arenas", dfImb$Parroquia)
+
+secuencia <- c(10, 6, 54)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Blas", dfImb$Parroquia)
+
+secuencia <- c(10, 6, 55)
+dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Tumbabiro", dfImb$Parroquia)
+
+print("Comprobamos que las parroquias se asignaron correctamente")
+print(dfImb)
+```
+
+## Procedemos asignar nombres a Cantones, con la misma logica que asignamos los nombres a las Parroquias.
+
+#### Para esto se define una secuencia, luego se procede a comparar si el numero de la Columna Provincia corresponde con el primer valor de la secuencia, posteriormente se compara si el numero de la Columna Canton es igual al segundo valor de la secuencia, si la condición se cumple, se asgina el valor "Nombre_de_Canton" a la columna Canton.
+
+```{r}
+# Cambiar nombres de Cantones
+secuencia <- c(10, 1)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "Ibarra", dfImb$Canton)
+
+secuencia <- c(10, 2)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "Antonio Ante", dfImb$Canton)
+
+secuencia <- c(10, 3)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "Cotacachi", dfImb$Canton)
+
+secuencia <- c(10, 4)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "Otavalo", dfImb$Canton)
+
+secuencia <- c(10, 5)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "Pimampiro", dfImb$Canton)
+
+secuencia <- c(10, 6)
+dfImb$Canton <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2], "San Miguel de Urcuqui", dfImb$Canton)
+
+print("Verificamos que los nombres de los Cantones se asignaron correctamente")
+print(dfImb)
+```
+
+## Finalmente asignamos el nombre de la Provincia.
+
+#### Para esto se define una secuencia, luego se procede a comparar si el numero de la Columna Provincia corresponde al valor de la secuencia, si la condición se cumple, se asgina el valor "Nombre_de_Provincia" a la columna Provincia.
+```{r}
+secuencia <- c(10)
+dfImb$Provincia <- ifelse(dfImb$Provincia == secuencia[1], "Imbabura", dfImb$Provincia)
+
+print(dfImb)
+
+```
+
+## Calcula las parroquias con mayor numero de personas con vivienda propia, arrendatarios, otros y ordena de mayor a menor.
+
+#### En la columna PropiedadVivienda tiene 7 valores que corresponden:
+#### 1 Propia y totalmente pagada
+#### 2 Propia y la están pagando
+#### 3 Propia (Regalo, posesión, herencia o donación)
+#### 4 Prestada o cedida
+#### 5 Por servicios
+#### 6 Arrendada
+#### 7 Anticresis
+```{r}
+library(dplyr)
+
+dfPropia <- dfImb %>%
+  
+  group_by(Parroquia) %>%
+  summarise(
+    TotalPer_VPropia = sum(TotalPersonasHogar[PropiedadVivienda %in% c(1, 2, 3)]), # Indica la suma total de personas por parroquia
+    TotalPer_Arriendo = sum(TotalPersonasHogar[PropiedadVivienda %in% c(6)]),
+    TotalPer_Otros = sum(TotalPersonasHogar[PropiedadVivienda %in% c(4, 5, 7)]),
+    TotalPersonas = sum(TotalPersonasHogar[PropiedadVivienda %in% c(1, 2, 3, 4, 5, 6, 7)])
+    ) %>%
+  arrange(desc(TotalPer_VPropia)) # Ordena de forma descendente la cantidad de personas por parroquia
+
+print(dfPropia)
+```
+
+## Mostrar graficamente el resultado anterior
+```{r}
+library(ggplot2)
+
+# Solo obtiene los 10 valores mas altos del TotalPersonasHogar
+dfPropia_top10 <- dfPropia %>% head(10)
+
+ggplot(dfPropia_top10, aes(x = Parroquia)) +
+  geom_bar(aes(y = TotalPer_VPropia, fill = "Propietarios"), stat = "identity") +
+  geom_bar(aes(y = TotalPer_Arriendo, fill = "Arrendatarios"), stat = "identity") +
+  labs(x = "Parroquia", y = "Cantidad de Personas", title = "IMBABURA: Parroquias Rurales", subtitle = "Cantidad de Personas Propietarias y Arrendatarios") +
+  
+  coord_flip() + # Intercambia los ejes X y Y
+  scale_x_discrete(limits = dfPropia_top10$Parroquia) +     # Se utiliza para asegurarse de que las parroquias se muestren en el orden correcto en el eje Y
+  
+  scale_fill_manual(values = c("Arrendatarios" = "red", "Propietarios" = "blue"), # Especifica los colores a asiganar
+                    labels = c("Arrendatarios", "Propietarios"),   # especifica las etoquetas que se mostraran en la leyenda para cada categoria
+                    name = "Tipo de Persona") +
+    scale_y_continuous(breaks = seq(0, max(dfPropia_top10$TotalPer_VPropia, dfPropia_top10$TotalPer_Arriendo), 10000)) +  # Se ajusta automaticamente en incrementos de 10000 desde 0 hasta el valor maximo
+  theme_minimal() +
+  
+  theme(axis.text.x = element_text(angle = 0, hjust = 1),
+        legend.position = c(0.9, 1),
+        legend.justification = c(0.5, 1),
+        #legend.title = element_blank(),  # No se muestra el titulo de la Leyenda
+        legend.box.spacing = unit(0.1, "cm"),
+        plot.title = element_text(hjust = 0.5),  # Ajusta la alineación horizontal del título
+        plot.subtitle = element_text(hjust = 0.5))  # Ajusta la alineación horizontal del subtítulo) +
+
+```
+
