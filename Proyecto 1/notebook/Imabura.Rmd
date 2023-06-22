@@ -10,10 +10,10 @@ output:
 #### GR2CC_2023-1
 
 # Resumen
-## Se indentifica las parroquias de la Provincia de Imbabura en donde existe mayor cantidad de personas con vivienda propia y arrendatarios haciendo uso de la herramienta RStudio, en primer lugar ocupa San Miguel de Ibarra seguido por Otavalo, en con un total de personas propietarias de 77.931 y 33.250 respectivamente y de personas arrendatarias con un total de 42.563 y 12.018 respectivamente.
+## Se indentifica las parroquias rurales de la Provincia de Imbabura en donde existe mayor cantidad de personas con vivienda propia y arrendatarios haciendo uso de la herramienta RStudio, en primer lugar ocupa San Miguel de Ibarra seguido por Otavalo, en con un total de personas propietarias de 77.931 y 33.250 respectivamente y de personas arrendatarias con un total de 42.563 y 12.018 respectivamente.
 
 ## Antecedentes
-## Para abordar el tema primero se obtiene los datos del INEC (Instituto Nacional de Estadísticas y Censos), del censo realizado en Ecuador en el 2010, así mismo con los diccionarios de datos ya que los títulos de las columnas, como su contenido está codificado, esto nos ayudará a entender mejor los datos que se van a manipular.
+## Para abordar el tema primero se obtiene los datos del INEC (Instituto Nacional de Estadísticas y Censos), del censo realizado en Ecuador en el 2010, así mismo con los diccionarios de datos ya que los títulos de las columnas, como su contenido está codificado, esto nos ayudará a entender mejor los datos que se van a manipular, esto para identificar las parroquias de la Provincia de Imbabura en donde existe mayor cantidad de personas propietarias y arrendatarias.
 
 # Objetivos
 ## *Determinar las parroquias con mayor cantidad de personas propietarias.
@@ -289,20 +289,21 @@ head(dfImb, n = 10)
 library(dplyr)
 
 dfPropia <- dfImb %>%
-  
   group_by(Parroquia) %>%
   summarise(
-    TotalPer_VPropia = sum(TotalPersonasHogar[PropiedadVivienda %in% c(1, 2, 3)]), # Indica la suma total de personas por parroquia
+    TotalPer_VPropia = sum(TotalPersonasHogar[PropiedadVivienda %in% c(1, 2, 3)]),
     TotalPer_Arriendo = sum(TotalPersonasHogar[PropiedadVivienda %in% c(6)]),
     TotalPer_Otros = sum(TotalPersonasHogar[PropiedadVivienda %in% c(4, 5, 7)]),
     TotalPersonas = sum(TotalPersonasHogar[PropiedadVivienda %in% c(1, 2, 3, 4, 5, 6, 7)])
-    ) %>%
-  arrange(desc(TotalPer_VPropia)) # Ordena de forma descendente la cantidad de personas por parroquia
+  ) %>%
+  arrange(desc(TotalPer_VPropia))
+
+print("Se puede apreciar de mayor a menor las parroquias, con la cantidad de personas propietarias y arrendatarias, encabezado por San Miguel de Ibarra, seguido por Otavalo con un total de personas propietarias de 77.931 y 33.250 respectivamente y con un total de personas arrendatarias 42.563 y 12.018 respectivamente.")
 
 print(dfPropia)
 ```
 
-## Mostrar graficamente el total de personas propietarias y arrendatarias.
+## Mostrar gráficamente las parroquias de la Provincia de Imbabura con el total de personas propietarias y arrendatarias.
 ```{r}
 library(ggplot2)
 
@@ -329,8 +330,9 @@ ggplot(dfPropia_top10, aes(x = Parroquia)) +
         #legend.title = element_blank(),  # No se muestra el titulo de la Leyenda
         legend.box.spacing = unit(0.1, "cm"),
         plot.title = element_text(hjust = 0.5),  # Ajusta la alineación horizontal del título
-        plot.subtitle = element_text(hjust = 0.5))  # Ajusta la alineación horizontal del subtítulo) +
+        plot.subtitle = element_text(hjust = 0.5))  # Ajusta la alineación horizontal del subtítulo)
 
+print("Graficamente se puede apreciar las 10 parroquias con mayor cantidad de personas propietarias y arrendatarias, encabezado por San Miguel de Ibarra, seguido por Otavalo con un total de personas propietarias de 77.931 y 33.250 respectivamente y con un total de personas arrendatarias 42.563 y 12.018 respectivamente.")
 ```
 
 # Conclusiones
