@@ -9,7 +9,20 @@ output:
 #### Daniel Samaniego Zapata
 #### GR2CC_2023-1
 
-## Buscamos y cargamos el archivo .CSV del censo del 2010 de la Provincia de Imbabura
+# Resumen
+## Se indentifica las parroquias de la Provincia de Imbabura en donde existe mayor cantidad de personas con vivienda propia y arrendatarios haciendo uso de la herramienta RStudio, en primer lugar ocupa San Miguel de Ibarra seguido por Otavalo, en con un total de personas propietarias de 77.931 y 33.250 respectivamente y de personas arrendatarias con un total de 42.563 y 12.018 respectivamente.
+
+## Antecedentes
+## Para abordar el tema primero se obtiene los datos del INEC (Instituto Nacional de Estadísticas y Censos), del censo realizado en Ecuador en el 2010, así mismo con los diccionarios de datos ya que los títulos de las columnas, como su contenido está codificado, esto nos ayudará a entender mejor los datos que se van a manipular.
+
+# Objetivos
+## *Determinar las parroquias con mayor cantidad de personas propietarias.
+## *Determinar las parroquias con mayor cantidad de personas arrendatarias.
+
+# Metodología
+
+## Buscamos el archivo .CSV del censo del 2010 de la Provincia de Imbabura en el siguiente enlace: https://www.ecuadorencifras.gob.ec/base-de-datos-censo-de-poblacion-y-vivienda-2010/
+## Y procedemos a cargarlo
 ```{r}
 # Especifica la ruta y el nombre del archivo
 rutaImb <- "R:\\Politecnica.Nacional\\2023-A\\Data Mining\\Imbabura\\Imbabura_CSV_Hogar.csv"
@@ -21,12 +34,11 @@ rutaImb <- "R:\\Politecnica.Nacional\\2023-A\\Data Mining\\Imbabura\\Imbabura_CS
 datos <- read.csv(rutaImb)
 
 # Imprime contenido del archivo
-print(datos)
+#print(datos)
 
 ```
 
-## Eliminamos las columnas que no se utilizarán verificando en la pagina: 
-### http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
+## Verificamos en el siguiente enlance las columnas que no necesitaremos para proceder a eliminarlas: http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
 
 ```{r}
 library(dplyr)
@@ -36,11 +48,12 @@ columnasBorrar <- c("I04", "I05", "I09", "I10", "URH", "H00", "H01", "H01N", "H0
 
 dfImb <- datos %>% select(-one_of(columnasBorrar))
 
-print(dfImb)
+# Comprobamos imprimiendo las 10 primeras lineas del dataframe
+head(dfImb, n = 10)
+#print(dfImb)
 ```
 
-## Una vez eliminadas las columnas que no necesitaremos, procedemos a colocar los Nombres a las columnas que vamos a utilizar, verificando en la pag:
-### http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
+## Una vez eliminadas las columnas que no necesitaremos, procedemos a colocar los Nombres a las columnas que vamos a utilizar, verificando en la pag: http://redatam.inec.gob.ec/cgibin/RpWebEngine.exe/PortalAction?&MODE=MAIN&BASE=CPV2010&MAIN=WebServerMain.inl
 ```{r}
 # Obtener nombres de las columnas actuales
 columnasActuales <- colnames(dfImb)
@@ -51,7 +64,9 @@ nombresCOlumnas <- c("Provincia", "Canton", "Parroquia", "PropiedadVivienda", "T
 # Asignar los nuevos nombres de las columnas al dataframe
 colnames(dfImb) <- nombresCOlumnas
 
-print(dfImb)
+# Comprobamos imprimiendo las 10 primeras lineas del dataframe
+head(dfImb, n = 10)
+#print(dfImb)
 
 ```
 
@@ -112,7 +127,6 @@ dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secu
 secuencia <- c(10, 2, 54)
 dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "San Roque", dfImb$Parroquia)
 ```
-
 
 ## Continuamos con las Parroquias del Cantón Cotacachi
 ```{r}
@@ -176,7 +190,6 @@ dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secu
 secuencia <- c(10, 4, 59)
 dfImb$Parroquia <- ifelse(dfImb$Provincia == secuencia[1] & dfImb$Canton == secuencia[2] & dfImb$Parroquia == secuencia[3], "Selva Alegre", dfImb$Parroquia)
 ```
-
 
 ## Seguimos con las Parroquias del Cantón Pimampiro
 ```{r}
@@ -252,11 +265,15 @@ print(dfImb)
 secuencia <- c(10)
 dfImb$Provincia <- ifelse(dfImb$Provincia == secuencia[1], "Imbabura", dfImb$Provincia)
 
-print(dfImb)
+# Comprobamos imprimiendo las 10 primeras lineas del dataframe
+head(dfImb, n = 10)
+#print(dfImb)
 
 ```
 
-## Calcula las parroquias con mayor numero de personas con vivienda propia, arrendatarios, otros y ordena de mayor a menor.
+# Resultado
+
+## Calcula las parroquias con mayor numero de personas con vivienda propia, arrendatarios, otros y ordenar de mayor a menor.
 
 #### En la columna PropiedadVivienda tiene 7 valores que corresponden:
 #### 1 Propia y totalmente pagada
@@ -266,6 +283,8 @@ print(dfImb)
 #### 5 Por servicios
 #### 6 Arrendada
 #### 7 Anticresis
+
+### Se crea la columna Otros para verificar que la suma de las columnas de propietarios,arrendatarios y otros me de igual a la columna TotalPersonas
 ```{r}
 library(dplyr)
 
@@ -283,7 +302,7 @@ dfPropia <- dfImb %>%
 print(dfPropia)
 ```
 
-## Mostrar graficamente el resultado anterior
+## Mostrar graficamente el total de personas propietarias y arrendatarias.
 ```{r}
 library(ggplot2)
 
@@ -314,3 +333,9 @@ ggplot(dfPropia_top10, aes(x = Parroquia)) +
 
 ```
 
+# Conclusiones
+
+## * Se puede apreciar tanto en la tabla como gráficamente los 10 primeros puestos, encabezado por San Miguel de Ibarra, seguido por Otavalo con un total de personas propietarias de 77.931 y 33.250 respectivamente y con un total de personas arrendatarias 42.563 y 12.018 respectivamente.
+## * Se realizó la liempieza de los datos de acuerdo a las indicaciones del profesor.
+## * Se logró aplicar la librería ggplot2 para mostrar gráficamente los resultados.
+ 
